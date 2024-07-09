@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify({
               model: model,
               messages: [
-                {"role": "system", "content": "You are a helpful assistant. Answer the question based on the given page content."},
+                {"role": "system", "content": "You are a preccise helpful assistant. Answer the question based on the given page content."},
                 {"role": "user", "content": `Page content: ${pageContent}\n\nQuestion: ${question}`}
               ],
               temperature: temperature

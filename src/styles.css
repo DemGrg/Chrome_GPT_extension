@@ -1,0 +1,38 @@
+body {
+    width: 400px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.container {
+    transition: all 0.3s ease;
+}
+
+.container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#result {
+    transition: all 0.3s ease;
+}
+
+#result:not(:empty) {
+    border-left: 4px solid #4f46e5;
+}
+
+button {
+    transition: all 0.2s ease;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+input[type="password"], input[type="number"], select, textarea {
+    transition: all 0.3s ease;
+}
+
+input[type="password"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.1);
+}
