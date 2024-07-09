@@ -1,3 +1,9 @@
-chrome.runtime.onInstalled.addListener(function() {
-    console.log("OpenAI GPT-4 Extension installed");
+chrome.runtime.onStartup.addListener(() => {
+  chrome.storage.local.remove('storedData', () => {
+    console.log('Stored data cleared on browser startup');
   });
+});
+
+chrome.runtime.onInstalled.addListener(() => {
+  console.log('Extension installed');
+});

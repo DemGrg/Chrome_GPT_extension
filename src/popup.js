@@ -95,7 +95,21 @@ document.addEventListener('DOMContentLoaded', function() {
           });
         });
       }
-  
+      
+      // Update the download function to use local storage
+      downloadButton.addEventListener('click', function() {
+        chrome.storage.local.get(['storedData'], function(result) {
+          const dataStr = JSON.stringify(result.storedData || [], null, 2);
+          const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+          
+          const exportFileDefaultName = 'openai_extension_data.json';
+      
+          let linkElement = document.createElement('a');
+          linkElement.setAttribute('href', dataUri);
+          linkElement.setAttribute('download', exportFileDefaultName);
+          linkElement.click();
+        });
+      });
     // Download JSON
     downloadButton.addEventListener('click', function() {
       chrome.storage.local.get(['storedData'], function(result) {
