@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const saveKeyButton = document.getElementById('save-key');
     const askButton = document.getElementById('ask-question');
+    const downloadButton = document.getElementById('download-json');
     const apiKeyInput = document.getElementById('api-key');
     const questionInput = document.getElementById('question');
     const resultDiv = document.getElementById('result');
@@ -58,7 +59,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
           if (data.choices && data.choices.length > 0) {
-            resultDiv.textContent = data.choices[0].message.content;
+            const answer = data.choices[0].message.content;
+            resultDiv.textContent = answer;
+            
+            // Store the data
+            storeData(question, answer, pageContent);
           } else {
             resultDiv.textContent = "Sorry, I couldn't generate an answer.";
           }
@@ -68,4 +73,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       });
     }
+  
+    function storeData(question, answer, pageContent) {
+      chrome.storage.local.get(['storedData'], function(result) {
+        let storedData = result.storedData || [];
+        storedData.push({
+          timestamp: new Date().toISOString(),
+          question: question,
+          answer: answer,
+          pageContent: pageContent
+        });
+        chrome.storage.local.set({storedData: storedData}, function() {
+          console.log('Data stored');
+        });
+      });
+    }
+  
+    // Download JSON
+    downloadButton.addEventListener('click', function() {
+      chrome.storage.local.get(['storedData'], function(result) {
+        const dataStr = JSON.stringify(result.storedData || [], null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        
+        const exportFileDefaultName = 'openai_extension_data.json';
+  
+        let linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+      });
+    });
   });

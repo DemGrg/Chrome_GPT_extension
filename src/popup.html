@@ -3,17 +3,53 @@
 <head>
   <title>OpenAI GPT-4 Extension</title>
   <style>
-    body { width: 300px; padding: 10px; font-family: Arial, sans-serif; }
-    input, button { margin: 5px 0; width: 100%; }
-    #result { margin-top: 10px; white-space: pre-wrap; }
+    body {
+      width: 300px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    .input-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    input[type="password"] {
+      flex-grow: 1;
+      margin-right: 5px;
+    }
+    button {
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    #question {
+      width: 100%;
+      margin-bottom: 10px;
+      height: 100px; 
+    }
+    #result {
+      margin-top: 10px;
+      white-space: pre-wrap;
+      border: 1px solid #ccc;
+      padding: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    #download-json {
+      margin-top: 10px;
+      width: 30%;
+    }
   </style>
 </head>
 <body>
-  <input type="password" id="api-key" placeholder="Enter your OpenAI API key">
-  <button id="save-key">Save API Key</button>
-  <input type="text" id="question" placeholder="Enter your question">
+  <div class="input-row">
+    <input type="password" id="api-key" placeholder="Enter your OpenAI API key">
+    <button id="save-key">Save Key</button>
+  </div>
+  <textarea id="question" placeholder="Enter your question"></textarea>
   <button id="ask-question">Ask GPT-4</button>
   <div id="result"></div>
+  <button id="download-json">Download JSON</button>
   <script src="popup.js"></script>
 </body>
 </html>
