@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OpenAI GPT-4 Extension</title>
+  <style>
+    body { width: 300px; padding: 10px; font-family: Arial, sans-serif; }
+    input, button { margin: 5px 0; width: 100%; }
+    #result { margin-top: 10px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <input type="password" id="api-key" placeholder="Enter your OpenAI API key">
+  <button id="save-key">Save API Key</button>
+  <input type="text" id="question" placeholder="Enter your question">
+  <button id="ask-question">Ask GPT-4</button>
+  <div id="result"></div>
+  <script src="popup.js"></script>
+</body>
+</html>
