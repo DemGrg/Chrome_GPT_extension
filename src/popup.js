@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'Authorization': `Bearer ${result.openai_api_key}`
           },
           body: JSON.stringify({
-            model: "gpt-4",
+            model: "gpt-4o",
             messages: [
               {"role": "system", "content": "You are a helpful assistant. Answer the question based on the given page content."},
               {"role": "user", "content": `Page content: ${pageContent}\n\nQuestion: ${question}`}
