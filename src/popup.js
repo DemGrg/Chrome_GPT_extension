@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultDiv = document.getElementById('result');
     const modelSelect = document.getElementById('model-select');
     const temperatureInput = document.getElementById('temperature');
+    const copyButton = document.getElementById('copy-result'); // New copy button
 
     // Load saved API key
     chrome.storage.local.get(['openai_api_key'], function(result) {
@@ -69,8 +70,10 @@ document.addEventListener('DOMContentLoaded', function() {
               
               // Store the data
               storeData(question, answer, pageContent, model, temperature);
+              copyButton.disabled = false;
             } else {
               resultDiv.textContent = "Sorry, I couldn't generate an answer.";
+              copyButton.disabled = true;
             }
           })
           .catch(error => {
@@ -110,4 +113,22 @@ document.addEventListener('DOMContentLoaded', function() {
           linkElement.click();
         });
       });
+
+      // Copy result
+      copyButton.addEventListener('click', function() {
+        const textToCopy = resultDiv.textContent;
+        navigator.clipboard.writeText(textToCopy).then(function() {
+          console.log('Text copied to clipboard');
+          // Optionally, you can provide visual feedback to the user
+          copyButton.textContent = 'Copied!';
+          setTimeout(() => {
+            copyButton.textContent = 'Copy';
+          }, 2000);
+        }).catch(function(err) {
+          console.error('Could not copy text: ', err);
+        });
+      });
+
+      // Initially disable the copy button
+      copyButton.disabled = true;
   });
