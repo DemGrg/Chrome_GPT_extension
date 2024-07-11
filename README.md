@@ -27,7 +27,7 @@ This Chrome extension leverages OpenAI's GPT models to analyze web page content 
 5. Type your question in the text area.
 6. Click "Ask GPT" to get an answer based on the current page's content.
 7. View the answer in the popup window.
-8. Optionally, click "Download JSON" to export your interaction history.
+8. Optionally, click "Download JSON" to export your interaction history / "copy" to copy / or "Clear JSON" to clear the history.
 
 ## ⚠️ Warning and Security Considerations
 
