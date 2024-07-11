@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modelSelect = document.getElementById('model-select');
     const temperatureInput = document.getElementById('temperature');
     const copyButton = document.getElementById('copy-result'); // New copy button
+    const clearJsonButton = document.getElementById('clear-json'); // New clear JSON button
 
     // Load saved API key
     chrome.storage.local.get(['openai_api_key'], function(result) {
@@ -140,6 +141,14 @@ document.addEventListener('DOMContentLoaded', function() {
           console.error('Could not copy text: ', err);
         });
       });
+
+          // Clear JSON data
+      clearJsonButton.addEventListener('click', function() {
+        chrome.storage.local.remove('storedData', function() {
+            console.log('Stored data cleared');
+            alert('JSON data has been cleared.');
+        } );
+       });
 
       // Initially disable the copy button
       copyButton.disabled = true;
