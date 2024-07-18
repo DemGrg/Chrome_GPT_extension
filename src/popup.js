@@ -39,61 +39,67 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
   
-    function askOpenAI(question, pageContent, model, temperature) {
-        chrome.storage.local.get(['openai_api_key'], function(result) {
-          if (!result.openai_api_key) {
-            resultDiv.textContent = "Please save your OpenAI API key first.";
-            return;
-          }
-    
-          resultDiv.textContent = "Loading...";
+    function askOpenAI(question, transcript, model, temperature) {
+      chrome.storage.local.get(['openai_api_key'], function(result) {
+        if (!result.openai_api_key) {
+          resultDiv.textContent = "Please save your OpenAI API key first.";
+          return;
+        }
+  
+        resultDiv.textContent = "Loading...";
 
-          // Determine character limit based on the model
-          const charLimit = model === 'gpt-3.5-turbo' ? 10000 : 100000;
+        // If question is empty, set it to "None"
+        const userQuestion = question.trim() === '' ? 'None' : question;
 
-          // Truncate the page content and notify user if truncation occurs
-          let truncatedContent;
-          if (pageContent.length > charLimit) {
-            truncatedContent = pageContent.substring(0, charLimit) + "... (content truncated)";
-            resultDiv.textContent = `Content exceeded ${charLimit} characters and was truncated. Processing...`;
-          } else {
-            truncatedContent = pageContent;
-          }
-    
-          fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${result.openai_api_key}`
+        const charLimit = model === 'gpt-3.5-turbo' ? 10000 : 100000;
+
+        let truncatedContent;
+        if (transcript.length > charLimit) {
+          truncatedContent = transcript.substring(0, charLimit) + "... (content truncated)";
+          resultDiv.textContent = `Transcript exceeded ${charLimit} characters and was truncated. Processing...`;
+        } else {
+          truncatedContent = transcript;
+        }
+  
+        fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${result.openai_api_key}`
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: [
+              {
+                "role": "system",
+                "content": "You are a helpful and precise summary assistant. Summarize the following website content by providing a summary title and key point fact summary as bullet points. At the end user can ask a question, if there is any question answer it after the summary else skip it. Follow the ----Format---- \n\nTitle: \nKey Point Fact Summary: \n\nUser Question: \n\n Question Answer: (if there is a question) "
             },
-            body: JSON.stringify({
-              model: model,
-              messages: [
-                {"role": "system", "content": "You are a precise helpful assistant. Answer the question based on the given page content."},
-                {"role": "user", "content": `Page content: ${truncatedContent}\n\nQuestion: ${question}`}
-              ],
-              temperature: temperature
-            })
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.choices && data.choices.length > 0) {
-              const answer = data.choices[0].message.content;
-              resultDiv.textContent = answer;
-              
-              // Store the data
-              storeData(question, answer, truncatedContent, model, temperature);
-              copyButton.disabled = false;
-            } else {
-              resultDiv.textContent = "Sorry, I couldn't generate an answer.";
-              copyButton.disabled = true;
+            {
+                "role": "user",
+                "content": `Web content:\n${transcript}\n\nUser Question: ${userQuestion}`
             }
+            ],
+            temperature: temperature
           })
-          .catch(error => {
-            resultDiv.textContent = "An error occurred: " + error.message;
-          });
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.choices && data.choices.length > 0) {
+            const answer = data.choices[0].message.content;
+            resultDiv.textContent = answer;
+            
+            storeData(question, answer, truncatedContent, model, temperature);
+            copyButton.disabled = false;
+          } else {
+            resultDiv.textContent = "Sorry, I couldn't generate an answer.";
+            copyButton.disabled = true;
+          }
+        })
+        .catch(error => {
+          resultDiv.textContent = "An error occurred: " + error.message;
         });
-      }
+      });
+  }
     
       function storeData(question, answer, truncatedContent, model, temperature) {
         chrome.storage.local.get(['storedData'], function(result) {
